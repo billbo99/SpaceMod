@@ -1,4 +1,7 @@
-v1.1.0
+v1.1.2
+- Add compatibility for Better Victory Screen (by stringweasel)
+
+v1.1.1
 - Minor corrections to the technology pre-requisites when using Bobs mods courtesy of KiwiHawk.
 
 v1.1.0

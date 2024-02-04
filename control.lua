@@ -187,7 +187,14 @@ function gui_open_frame(player)
 	
 end
 
+local function better_victory_screen_disable_rocket_victory()
+    if remote.interfaces["better-victory-screen"] and remote.interfaces["better-victory-screen"]["set_no_victory"] then
+      remote.call("better-victory-screen", "set_no_victory", true)
+    end
+end
+
 script.on_configuration_changed( function(event) 
+  better_victory_screen_disable_rocket_victory()
   local changed = event.mod_changes and event.mod_changes["SpaceMod"]
 
   if changed then
@@ -662,7 +669,14 @@ script.on_event(defines.events.on_gui_click, function(event)
 		if gui_spacex then
 			gui_spacex.destroy()
 		end
-		game.set_game_state{game_finished=true, player_won=true, can_continue=true}
+
+		local force = game.players[event.player_index].force
+		if remote.interfaces["better-victory-screen"] and remote.interfaces["better-victory-screen"]["trigger_victory"] then
+			remote.call("better-victory-screen", "trigger_victory", force, true)
+		else
+			game.set_game_state{game_finished=true, player_won=true, can_continue=true, victorious_force=force}
+		end
+
 		global.finished = true
 		return
 	end	
@@ -760,7 +774,7 @@ script.on_event(defines.events.on_research_finished, function(event)
 end)
 
 script.on_init(function()
-
+	better_victory_screen_disable_rocket_victory()
     glob_init()
 
     for _, player in pairs(game.players) do
